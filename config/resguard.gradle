@@ -1,0 +1,44 @@
+apply plugin: 'AndResGuard'
+
+//微信的混淆资源 放在签名的后面
+andResGuard {
+    mappingFile = null
+    use7zip = true
+    useSign = true
+    keepRoot = false
+    // add <your_application_id>.R.drawable.icon into whitelist.
+    // because the launcher will get thgge icon with his name
+    whiteList = [
+            //for your icon
+            "R.drawable.icon",
+            //for fabric
+            "R.string.com.crashlytics.*",
+            //for umeng update
+            "R.string.umeng*",
+            "R.string.UM*",
+            "R.string.tb_*",
+            "R.layout.umeng*",
+            "R.layout.tb_*",
+            "R.drawable.umeng*",
+            "R.drawable.tb_*",
+            "R.anim.umeng*",
+            "R.color.umeng*",
+            "R.color.tb_*",
+            "R.style.*UM*",
+            "R.style.umeng*",
+            "R.id.umeng*"
+    ]
+    compressFilePattern = [
+            "*.png",
+            "*.jpg",
+            "*.jpeg",
+            "*.gif",
+            "resources.arsc"
+    ]
+    sevenzip {
+        artifact = 'com.tencent.mm:SevenZip:1.1.16'
+        //path = "/usr/local/bin/7za"
+    }
+}
+
+//微信的混淆资源 结束

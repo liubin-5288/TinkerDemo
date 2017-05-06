@@ -1,0 +1,89 @@
+apply plugin: 'com.android.application'
+
+def tinkerId = getTinkerIdValue();
+
+//定义打包时间函数
+def packageTime() {
+    return new Date().format("MMdd-HHmm")
+}
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "com.example.tinkertest"
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0.1"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "MESSAGE", "\"IProFragment am the base apk\""
+        /**
+         * client version would update with patch
+         * so we can get the newly git version easily!
+         */
+        buildConfigField "String", "TINKER_ID", "\"${tinkerId}\""
+        buildConfigField "String", "PLATFORM",  "\"all\""
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors{
+        Test1{}
+        Test2{}
+    }
+
+    //修改生成的最终文件名
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                File outputDirectory = new File(outputFile.parent);
+                def fileName
+                if (variant.buildType.name == "release") {
+                    // 输出apk名称为app_v1.0.0_0615-1211_realse.apk
+                    fileName = "app_${variant.productFlavors[0].name}_${defaultConfig.versionName}_${packageTime()}_release.apk"
+                }
+                else {
+                    fileName = "app_${variant.productFlavors[0].name}_${defaultConfig.versionName}_${packageTime()}_debug.apk"
+                }
+                output.outputFile = new File(outputDirectory, fileName)
+
+            }
+        }
+    }
+
+
+
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    testCompile 'junit:junit:4.12'
+
+    //tinker的核心库
+     compile("com.tencent.tinker:tinker-android-lib:1.7.7")
+    // 用于生成application类
+     provided("com.tencent.tinker:tinker-android-anno:1.7.7")
+     compile "com.android.support:multidex:1.0.1"
+}
+//添加微信资源混淆
+apply from: "../config/resguard.gradle"
+apply from: "../config/tinker.gradle"
+
+
+def getTinkerIdValue() {
+    return hasProperty("TINKER_ID") ? TINKER_ID : "${android.defaultConfig.versionName}"
+}
+
+
+
