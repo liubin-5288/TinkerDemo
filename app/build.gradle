@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+apply from: "../config/resguard.gradle"
+
 def tinkerId = getTinkerIdValue();
 
 //定义打包时间函数
@@ -77,8 +79,9 @@ dependencies {
      compile "com.android.support:multidex:1.0.1"
 }
 //添加微信资源混淆
-apply from: "../config/resguard.gradle"
+
 apply from: "../config/tinker.gradle"
+
 
 
 def getTinkerIdValue() {
