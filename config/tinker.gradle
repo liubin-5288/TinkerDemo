@@ -24,7 +24,7 @@ ext {
     tinkerApplyResourcePath = ""
 
     //only use for build all flavor, if not, just ignore this field
-    tinkerBuildFlavorDirectory = "${tinkerPath}/app-0508-2101"
+    tinkerBuildFlavorDirectory = "${tinkerPath}/app-0508-2229"
 }
 
 
